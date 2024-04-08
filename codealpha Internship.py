@@ -1,78 +1,71 @@
-#importing the time module
 import time
+import random
 
-#welcoming the user
+# Welcoming the user
 name = input("What is your name? ")
+print("Hello, " + name + ", Time to play hangman!")
 
-print ("Hello, " + name, "Time to play hangman!")
-
-#wait for 1 second
+# Wait for 1 second
 time.sleep(1)
 
-print ("Start guessing...")
+print("Start guessing...")
 time.sleep(0.5)
 
-#here we set the secret. You can select any word to play with. 
-word = random.randint(a,)
+# List of words to choose from
+words = ['python', 'hangman', 'programming', 'game', 'computer', 'player']
 
-#creates an variable with an empty value
+# Selecting a random word
+word = random.choice(words)
+
+# Create a variable with an empty value for guesses
 guesses = ''
 
-#determine the number of turns
-turns = 10
+# Maximum number of incorrect guesses allowed
+max_attempts = 10
 
 # Create a while loop
+while max_attempts > 0:
+    # Make a counter that starts with zero
+    failed = 0
 
-#check if the turns are more than zero
-while turns > 0:         
-
-    # make a counter that starts with zero
-    failed = 0             
-
-    # for every character in secret_word    
-    for char in word:      
-
-    # see if the character is in the players guess
-        if char in guesses:    
-    
-        # print then out the character
-            print (char,end=""),    
-
+    # For every character in the secret word
+    for char in word:
+        # See if the character is in the player's guess
+        if char in guesses:
+            # Print the character
+            print(char, end=" ")
         else:
-    
-        # if not found, print a dash
-            print ("_",end=""),     
-       
-        # and increase the failed counter with one
-            failed += 1    
+            # If not found, print a dash
+            print("_", end=" ")
 
-    # if failed is equal to zero
+            # Increase the failed counter with one
+            failed += 1
 
-    # print You Won
-    if failed == 0:        
-        print ("You won")
-    # exit the script
-        break            
-    # ask the user go guess a character
-    guess = input("guess a character:") 
+    # If failed is equal to zero, the player won
+    if failed == 0:
+        print("\nYou won!")
+        break
 
-    # set the players guess to guesses
-    guesses += guess                    
+    # Ask the user to guess a character
+    guess = input("\nGuess a character: ")
 
-    # if the guess is not found in the secret word
-    if guess not in word:  
- 
-     # turns counter decreases with 1 (now 9)
-        turns -= 1        
- 
-    # print wrong
-        print ("Wrong")  
- 
-    # how many turns are left
-        print ("You have", + turns, 'more guesses' )
- 
-    # if the turns are equal to zero
-        if turns == 0:           
-    
-        # print "You Lose"
-            print ("You Lose"  )
+    # Validate the input (single character)
+    if len(guess) != 1:
+        print("Please enter a single character.")
+        continue
+
+    # Set the player's guess to guesses
+    guesses += guess
+
+    # If the guess is not found in the secret word
+    if guess not in word:
+        # Decrease the max_attempts counter
+        max_attempts -= 1
+        # Print wrong guess and remaining attempts
+        print("Wrong guess. You have", max_attempts, "more attempts.")
+
+        # If the max_attempts are equal to zero, the player loses
+        if max_attempts == 0:
+            print("You Lose!")
+            break
+
