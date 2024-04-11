@@ -1,71 +1,114 @@
-import time
 import random
+import time
 
-# Welcoming the user
-name = input("What is your name? ")
-print("Hello, " + name + ", Time to play hangman!")
+# Function to choose a random word from a list
+def choose_word():
+    words = ['python', 'hangman', 'computer', 'programming', 'coding', 'game', 'algorithm']
+    return random.choice(words)
 
-# Wait for 1 second
-time.sleep(1)
+# Function to display the hangman
+def display_hangman(tries):
+    stages = [  
+                '''
+                   --------
+                   |      |
+                   |      
+                   |      
+                   |      
+                   |     
+                ''',
+                '''
+                   --------
+                   |      |
+                   |      O
+                   |      
+                   |      
+                   |     
+                ''',
+                '''
+                   --------
+                   |      |
+                   |      O
+                   |      |
+                   |      
+                   |     
+                ''',
+                '''
+                   --------
+                   |      |
+                   |      O
+                   |     /|
+                   |      
+                   |     
+                ''',
+                '''
+                   --------
+                   |      |
+                   |      O
+                   |     /|\\
+                   |      
+                   |     
+                ''',
+                '''
+                   --------
+                   |      |
+                   |      O
+                   |     /|\\
+                   |     / 
+                   |     
+                ''',
+                '''
+                   --------
+                   |      |
+                   |      O
+                   |     /|\\
+                   |     / \\
+                   |     
+                '''
+    ]
+    return stages[tries]
 
-print("Start guessing...")
-time.sleep(0.5)
+# Function to initialize the game
+def hangman():
+    word = choose_word()
+    word_letters = set(word)
+    guessed_letters = set()
+    tries = 6
+    start_time = time.time()
 
-# List of words to choose from
-words = ['python', 'hangman', 'programming', 'game', 'computer', 'player']
+    print("Welcome to Hangman!")
+    print(display_hangman(tries))
+    print("\n")
 
-# Selecting a random word
-word = random.choice(words)
+    while tries > 0:
+        # Displaying the word with guessed letters
+        display_word = ''.join([letter if letter in guessed_letters else '_' for letter in word])
+        print(display_word)
 
-# Create a variable with an empty value for guesses
-guesses = ''
+        # Taking user input
+        guess = input("Guess a letter: ").lower()
 
-# Maximum number of incorrect guesses allowed
-max_attempts = 10
-
-# Create a while loop
-while max_attempts > 0:
-    # Make a counter that starts with zero
-    failed = 0
-
-    # For every character in the secret word
-    for char in word:
-        # See if the character is in the player's guess
-        if char in guesses:
-            # Print the character
-            print(char, end=" ")
+        if guess in guessed_letters:
+            print("You have already guessed that letter. Try again.")
+        elif guess in word_letters:
+            guessed_letters.add(guess)
+            if set(word_letters) == guessed_letters:
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                print(f"Congratulations! You guessed the word '{word}' correctly in {elapsed_time:.2f} seconds!")
+                break
         else:
-            # If not found, print a dash
-            print("_", end=" ")
+            tries -= 1
+            print(display_hangman(tries))
+            print(f"Wrong guess! You have {tries} tries left.")
 
-            # Increase the failed counter with one
-            failed += 1
+        guessed_letters.add(guess)
 
-    # If failed is equal to zero, the player won
-    if failed == 0:
-        print("\nYou won!")
-        break
+    if tries == 0:
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print("Sorry, you ran out of tries. The word was:", word)
+        print(f"Time elapsed: {elapsed_time:.2f} seconds")
 
-    # Ask the user to guess a character
-    guess = input("\nGuess a character: ")
-
-    # Validate the input (single character)
-    if len(guess) != 1:
-        print("Please enter a single character.")
-        continue
-
-    # Set the player's guess to guesses
-    guesses += guess
-
-    # If the guess is not found in the secret word
-    if guess not in word:
-        # Decrease the max_attempts counter
-        max_attempts -= 1
-        # Print wrong guess and remaining attempts
-        print("Wrong guess. You have", max_attempts, "more attempts.")
-
-        # If the max_attempts are equal to zero, the player loses
-        if max_attempts == 0:
-            print("You Lose!")
-            break
-
+# Calling the hangman function to start the game
+hangman()
